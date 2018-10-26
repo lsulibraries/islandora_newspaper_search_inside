@@ -1,0 +1,6 @@
+name = Islandora Newspaper Search Inside
+description = "Search OCR in a given newspaper parent's children"
+package = Islandora
+version = 7.x-1.11 
+core = 7.x 
+dependencies[] = islandora_newspaper

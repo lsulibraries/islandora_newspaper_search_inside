@@ -1,0 +1,70 @@
+<?php
+
+function islandora_newspaper_search_inside_block_info() {
+
+  // This hook returns an array, each component of which is an array of block
+  // information. The array keys are the 'delta' values used in other block
+  // hooks.
+  //
+  // The required block information is a block description, which is shown
+  // to the site administrator in the list of possible blocks. You can also
+  // provide initial settings for block weight, status, etc.
+  //
+  // Many options are defined in hook_block_info():
+
+  // This sample shows how to provide default settings. In this case we'll
+  // enable the block in the first sidebar and make it visible only on
+  // 'node/*' pages. See the hook_block_info() documentation for these.
+  $blocks['test'] = array(
+    'info' => t('testing block'),
+    'status' => 1,
+    'region' => 'content',
+    'visibility' => BLOCK_VISIBILITY_NOTLISTED,
+     'pages' => '',
+  );
+  return $blocks;
+}
+
+function islandora_newspaper_search_inside_block_view($delta = '') {
+module_load_include('inc', 'islandora_newspaper_search_inside', 'includes/block.form');
+  // The $delta parameter tells us which block is being requested.
+  //switch ($delta) {
+  //  case 'example_empty':
+  //    $block['content'] = drupal_get_form('islandora_newspaper_search_inside');
+  //}
+  //module_load_include('inc', 'islandora_newspaper_search_inside', 'includes/block.form')
+$blocks = array();
+$blocks['subject'] = t('TEST');
+$blocks['content'] = drupal_get_form('islandora_newspaper_search_inside_form');
+return $blocks;
+}
+
+function islandora_newspaper_search_inside_search($pid) {
+  $tuque = islandora_get_tuque_connection();
+  $obj = islandora_object_load($pid);
+  $query = <<<EOL
+SELECT ?a
+FROM <#ri>
+WHERE
+{?a <info:fedora/fedora-system:def/relations-external#isMemberOf> <info:fedora/$pid>}
+EOL;
+  $issues = $tuque->repository->ri->sparqlQuery($query, 'unlimited');
+
+  $pages = array();
+
+  foreach ($issues as $issue) {
+    $issue_pid = $issue['a']['value'];
+    $page_query = <<<EOL
+SELECT ?a
+FROM <#ri>
+WHERE
+{?a <http://islandora.ca/ontology/relsext#isPageOf> <info:fedora/$issue_pid>}
+EOL;
+
+    $result = $tuque->repository->ri->sparqlQuery($page_query, 'unlimited');
+    foreach ($result as $key => $value) {
+      $pages[] = $value['a']['value'];
+    }
+  }
+  return $pages;
+}
