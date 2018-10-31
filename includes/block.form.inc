@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * Implements hook_form().
+ */
 function islandora_newspaper_search_inside_form($form, &$form_state){
     $form['newspaper_search'] = array(
       '#title' => t('Search inside the Newspaper'),
@@ -12,16 +15,10 @@ function islandora_newspaper_search_inside_form($form, &$form_state){
     );
   return $form;
 }
-//search fn
-// load all child ORC/HORC datastreams and their content for the search.
-// str_pos
-//$obj = islandora_object_load($pid);
-//find the children RIsearch?
-//load all the children
-// $obj['OCR']->content || $obj['HOCR']->content
-//strpos($hay, $needle)
 
-
+/**
+ * Implements hook_form_submit().
+ */
 function islandora_newspaper_search_inside_form_submit($form, &$form_state){
   //some fn to search for string in ocr
   if($form_state['input']['newspaper_search'] != NULL) {

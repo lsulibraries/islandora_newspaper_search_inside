@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * Implements hook_form().
+ */
 function islandora_newspaper_search_inside_results_form($form, &$form_state) {
   $params = drupal_get_query_parameters();
   foreach ($params as $pid) {
