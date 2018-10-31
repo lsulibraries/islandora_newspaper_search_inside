@@ -1,5 +1,9 @@
 <?php
-
+/**
+ * @file
+ * Displays the search bar for a Newspaper
+ * Finds the #pids of the newspaper pages which got hit by the searched string
+ */
 /**
  * Implements hook_form().
  */

@@ -1,7 +1,8 @@
 <?php
 /**
  * @file
- *
+ * Searching for the string the pages of the newspaper $pid
+ * Returns the pids of the pages whic are children of newspaper $pid
  */
 
  /**

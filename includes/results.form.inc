@@ -1,5 +1,9 @@
 <?php
-
+/**
+ * @file
+ * Returns the form of the resulted pages which got hit by the searched string
+ */
+ 
 /**
  * Implements hook_form().
  */
