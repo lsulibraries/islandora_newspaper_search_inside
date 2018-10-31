@@ -1,25 +1,15 @@
 <?php
 
 function islandora_newspaper_search_inside_form($form, &$form_state){
-  $path_arr = explode('/', current_path());
-  $obj = islandora_object_load($path_arr[2]);
-  if (in_array('islandora:newspaperCModel', $obj->models)) {
     $form['newspaper_search'] = array(
-      '#title' => t('Search inside this newspaper'),
+      '#title' => t('Search inside the Newspaper'),
       '#type' => 'textfield',
+      '#description' => t('Search only for a single string'),
     );
       $form['submit'] = array(
       '#type' => 'submit',
-      '#value' => t('Find the string in the newspaper'),
+      '#value' => t('Find the string in the Newspaper'),
     );
-  }
-
-  // if(current_path() == 'islandora/object'){
-  //   dpm('form');
-  //   }
-  //are we on a n object page?
-  //is it a newspaper parent?
-  //then add this form
   return $form;
 }
 //search fn
@@ -34,15 +24,31 @@ function islandora_newspaper_search_inside_form($form, &$form_state){
 
 function islandora_newspaper_search_inside_form_submit($form, &$form_state){
   //some fn to search for string in ocr
-  $path_arr = explode('/', current_path());
-  $parent = $path_arr[2];
-  $pids = islandora_newspaper_search_inside_search($parent);
-  foreach($pids as $key => $value) {
-    $obj = islandora_object_load($value);
-    if (isset($obj['OCR'])) {
-      if(strpos($obj['OCR']->content, $form_state['input']['newspaper_search']) != FALSE ){
-        dpm('hit');
+  if($form_state['input']['newspaper_search'] != NULL) {
+    $path_arr = explode('/', current_path());
+    $parent = $path_arr[2];
+    $pids = islandora_newspaper_search_inside_search($parent);
+    $results = array();
+    foreach($pids as $key => $value) {
+      $obj = islandora_object_load($value);
+      if (isset($obj['OCR'])) {
+        if(strpos($obj['OCR']->content, $form_state['input']['newspaper_search']) != FALSE ){
+          $results[] = $value;
+          }
+        }
       }
+      if(count($results) > 0) {
+        $options = array('query' => array());
+        foreach($results as $result) {
+          $options['query'][] = $result;
+        }
+      drupal_goto('newspaper/search/results', $options);
     }
+    else {
+      drupal_set_message('Sorry, but your search returned no results.');
+    }
+  }
+  else {
+    drupal_set_message('Cannot search an empty string', 'error');
   }
 }

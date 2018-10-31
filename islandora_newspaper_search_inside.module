@@ -1,44 +1,38 @@
 <?php
+/**
+ * @file
+ *
+ */
 
-function islandora_newspaper_search_inside_block_info() {
-
-  // This hook returns an array, each component of which is an array of block
-  // information. The array keys are the 'delta' values used in other block
-  // hooks.
-  //
-  // The required block information is a block description, which is shown
-  // to the site administrator in the list of possible blocks. You can also
-  // provide initial settings for block weight, status, etc.
-  //
-  // Many options are defined in hook_block_info():
-
-  // This sample shows how to provide default settings. In this case we'll
-  // enable the block in the first sidebar and make it visible only on
-  // 'node/*' pages. See the hook_block_info() documentation for these.
-  $blocks['test'] = array(
-    'info' => t('testing block'),
-    'status' => 1,
-    'region' => 'content',
-    'visibility' => BLOCK_VISIBILITY_NOTLISTED,
-     'pages' => '',
+ /**
+  * Implements hook_menu().
+  */
+function islandora_newspaper_search_inside_menu() {
+  $items = array();
+  $items['newspaper/search/results'] = array(
+      'title' => 'Search inside newspaper results.',
+      'page callback' => 'drupal_get_form',
+      'page arguments' => array('islandora_newspaper_search_inside_results_form', 1),
+      'file' => 'includes/results.form.inc',
+      'access callback' => TRUE,n
   );
-  return $blocks;
+  return $items;
 }
 
-function islandora_newspaper_search_inside_block_view($delta = '') {
-module_load_include('inc', 'islandora_newspaper_search_inside', 'includes/block.form');
-  // The $delta parameter tells us which block is being requested.
-  //switch ($delta) {
-  //  case 'example_empty':
-  //    $block['content'] = drupal_get_form('islandora_newspaper_search_inside');
-  //}
-  //module_load_include('inc', 'islandora_newspaper_search_inside', 'includes/block.form')
-$blocks = array();
-$blocks['subject'] = t('TEST');
-$blocks['content'] = drupal_get_form('islandora_newspaper_search_inside_form');
-return $blocks;
+function islandora_newspaper_search_inside_preprocess_islandora_newspaper(&$variables) {
+  module_load_include('inc', 'islandora_newspaper_search_inside' ,'includes/block.form');
+  $form = drupal_get_form('islandora_newspaper_search_inside_form');
+  $variables['search_form_newspaper'] = drupal_render($form);
 }
 
+/**
+ * Does something.
+ *
+ * @param string $pid
+ *   Object pid.
+ * @return array $pages
+ *   Array of something.
+ */
 function islandora_newspaper_search_inside_search($pid) {
   $tuque = islandora_get_tuque_connection();
   $obj = islandora_object_load($pid);
