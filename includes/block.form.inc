@@ -43,7 +43,8 @@ function islandora_newspaper_search_inside_form_submit($form, &$form_state){
         foreach($results as $result) {
           $options['query'][] = $result;
         }
-      drupal_goto('newspaper/search/results', $options);
+        $options['query'][] = $form_state['input']['newspaper_search'];
+      drupal_goto('newspaper/search/results-tpl', $options);
     }
     else {
       drupal_set_message('Sorry, but your search returned no results.');
