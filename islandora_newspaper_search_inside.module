@@ -10,18 +10,9 @@
   */
 function islandora_newspaper_search_inside_menu() {
   $items = array();
-  $items['newspaper/search/results'] = array(
-      'title' => 'Search inside newspaper results.',
-      'page callback' => 'drupal_get_form',
-      'page arguments' => array('islandora_newspaper_search_inside_results_form', 1),
-      'file' => 'includes/results.form.inc',
-      'access callback' => TRUE,
-  );
   $items['newspaper/search/results-tpl'] = array(
       'title' => 'Search inside newspaper results.',
       'page callback' => 'islandora_newspaper_search_inside_temp',
-      // 'page arguments' => array('islandora_newspaper_search_inside_results_form', 1),
-      // 'file' => 'includes/results.form.inc',
       'access callback' => TRUE,
   );
   return $items;
@@ -37,10 +28,13 @@ function islandora_newspaper_search_inside_theme() {
   return array(
     'islandora_newspaper_search_inside_temp_tpl' => array(
       'template' => 'theme/temp',
-      'variables' => array('hello' => 'world'),
     ),
   );
 }
+
+/**
+ * Preprocessing the links for the template.
+ */
 
 function islandora_newspaper_search_inside_preprocess_islandora_newspaper_search_inside_temp_tpl(&$variables){
   module_load_include('inc','islandora_newspaper_search_inside','includes/block.form');
@@ -58,9 +52,6 @@ function islandora_newspaper_search_inside_preprocess_islandora_newspaper_search
     $variables[$pid]['path'] = '/islandora/object/' . $obj->id;
     $variables[$pid]['ocr_view'] = '/islandora/object/' . $obj->id . '/datastream/OCR/view';
     $variables[$pid]['tn_link'] = '/islandora/object/' . $obj->id . '/datastream/TN/view';
-    //$path_link = "<a href='$path'><img src='$tn_link' alt='$obj->label'></img></a>";
-    //$ocr_link = "<a href='$ocr_view'>View OCR</a>";
-    //$obj_link = "<a href='$path'>$obj->label</a>";
   }
 }
 
@@ -89,9 +80,7 @@ WHERE
 {?a <info:fedora/fedora-system:def/relations-external#isMemberOf> <info:fedora/$pid>}
 EOL;
   $issues = $tuque->repository->ri->sparqlQuery($query, 'unlimited');
-
   $pages = array();
-
   foreach ($issues as $issue) {
     $issue_pid = $issue['a']['value'];
     $page_query = <<<EOL
@@ -100,7 +89,6 @@ FROM <#ri>
 WHERE
 {?a <http://islandora.ca/ontology/relsext#isPageOf> <info:fedora/$issue_pid>}
 EOL;
-
     $result = $tuque->repository->ri->sparqlQuery($page_query, 'unlimited');
     foreach ($result as $key => $value) {
       $pages[] = $value['a']['value'];
