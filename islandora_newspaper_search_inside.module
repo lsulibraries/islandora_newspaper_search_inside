@@ -40,6 +40,7 @@ function islandora_newspaper_search_inside_preprocess_islandora_newspaper_search
   module_load_include('inc','islandora_newspaper_search_inside','includes/block.form');
   module_load_include('inc','islandora_newspaper_search_inside','includes/results.form');
   $params = drupal_get_query_parameters();
+  $results = [];
   $n = array();
   $n = count($params);
   $variables['search'] = $params[$n-1];
