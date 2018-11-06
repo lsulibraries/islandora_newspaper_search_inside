@@ -24,7 +24,6 @@ function islandora_newspaper_search_inside_temp() {
 
 function islandora_newspaper_search_inside_theme() {
   module_load_include('inc','islandora_newspaper_search_inside','includes/block.form');
-  module_load_include('inc','islandora_newspaper_search_inside','includes/results.form');
   return array(
     'islandora_newspaper_search_inside_temp_tpl' => array(
       'template' => 'theme/temp',
@@ -38,21 +37,19 @@ function islandora_newspaper_search_inside_theme() {
 
 function islandora_newspaper_search_inside_preprocess_islandora_newspaper_search_inside_temp_tpl(&$variables){
   module_load_include('inc','islandora_newspaper_search_inside','includes/block.form');
-  module_load_include('inc','islandora_newspaper_search_inside','includes/results.form');
   $params = drupal_get_query_parameters();
-  $results = [];
   $n = array();
   $n = count($params);
   $variables['search'] = $params[$n-1];
   unset($params[$n-1]);
   $variables['n'] = count($params);
-  $variables['pids'] = $params;
   foreach ($params as $pid) {
     $obj = islandora_object_load($pid);
-    $variables[$pid]['label'] = $obj->label;
-    $variables[$pid]['path'] = '/islandora/object/' . $obj->id;
-    $variables[$pid]['ocr_view'] = '/islandora/object/' . $obj->id . '/datastream/OCR/view';
-    $variables[$pid]['tn_link'] = '/islandora/object/' . $obj->id . '/datastream/TN/view';
+    $variables['issues'][$pid]['label'] = $obj->label;
+    $variables['issues'][$pid]['pid'] = $obj->id;
+    $variables['issues'][$pid]['path'] = '/islandora/object/' . $obj->id .'#page/1/mode/2up/search/' . $variables['search'];
+    // $variables['issues'][$pid]['ocr_view'] = '/islandora/object/' . $obj->id . '/datastream/OCR/view';
+    $variables['issues'][$pid]['tn_link'] = '/islandora/object/' . $obj->id . '/datastream/TN/view';
   }
 }
 

@@ -38,10 +38,22 @@ function islandora_newspaper_search_inside_form_submit($form, &$form_state){
           }
         }
       }
-      if(count($results) > 0) {
+      $issues = array();
+      foreach($results as $pid) {
+        $page = islandora_object_load($pid);
+        //parents are the issues
+        $parents = $page->getParents();
+        foreach($parents as $parent){
+          $issues[] = $parent;
+        }
+        //load up the parent object (the issue)
+        //return the issues only.
+      }
+
+      if(count($issues) > 0) {
         $options = array('query' => array());
-        foreach($results as $result) {
-          $options['query'][] = $result;
+        foreach($issues as $issue) {
+          $options['query'][] = $issue;
         }
         $options['query'][] = $form_state['input']['newspaper_search'];
       drupal_goto('newspaper/search/results-tpl', $options);
